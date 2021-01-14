@@ -22,8 +22,13 @@ def run_config():
     pass
 
 
+# Takes commandline arguments
 def take_args():
-    pass
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument("--reconfig", "--reconfigure", help="Reconfigure script, credentials and other details", required=False, action="store_true")
+    args = argparser.parse_args()
+
+    return args
 
 
 def get_ip():
