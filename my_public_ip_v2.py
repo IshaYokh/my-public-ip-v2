@@ -12,13 +12,66 @@ import smtplib
 from email.message import EmailMessage
 from twilio.rest import Client
 import sqlite3
+from getpass import getpass
 
 
+# Contains the main logic and control flow of the program
 def main():
     pass
 
 
+# Runs commandline prompt to take credentials and other details from user
 def run_config():
+    # Dict object to store credentials and other details
+    creds = {"SCRIPT_CONFIGURED":False}
+
+    # Taking input for gmail credentials
+    while(True):
+        use_gmail = input("Do you want to use gmail to receive updates about your public IP address? (y/n): ")
+        if(use_gmail != "y" or use_gmail.lower() != "n" or use_gmail != "yes" or use_gmail != "no"):
+            break
+
+    if(use_gmail.lower() == "y" or use_gmail.lower() == "yes"):
+        gmail_username = input("Enter gmail username: ")
+        gmail_password = getpass("Enter gmail password: ")
+        gmail_rec_email = input("Enter receiver email: ")
+
+        # Storing gmail credentials in creds to store later on in environment variables
+        creds["GMAIL_USERNAME"] = gmail_username
+        creds["GMAIL_PASSWORD"] = gmail_password
+        creds["GMAIL_REC_EMAIL"] = gmail_rec_email
+
+    # Taking input for sms credentials
+    while(True):
+        use_sms = input("Do you want to use sms to receive updates about your public IP address? (y/n): ")
+        if(use_sms != "y" or use_sms.lower() != "n" or use_sms != "yes" or use_sms != "no"):
+            break
+
+    if(use_sms.lower() == "y" or use_sms.lower() == "yes"):
+        twilio_sid = getpass("Enter twilio account SID: ")
+        twilio_token = getpass("Enter twilio account authentication token: ")
+        twilio_sender_number = input("Enter twilio sender phone number: ")
+        twilio_rec_number = input("Enter receiver phone number: ")
+
+        # Storing sms credentials in creds to store later on in environment variables
+        creds["TWILIO_SID"] = twilio_sid
+        creds["TWILIO_TOKEN"] = twilio_token
+        creds["TWILIO_SENDER_NUMBER"] = twilio_sender_number
+        creds["TWILIO_REC_NUMBER"] = twilio_rec_number
+
+    script_schedule = input("How frequent would you like the script to run? (Enter amount in minutes): ")
+    creds["SCRIPT_SCHEDULE":script_schedule]
+
+    return creds
+        
+
+# Stores credentials and other details in environment variables
+def store_credentials():
+    pass
+
+
+# Gets credentials and other details in environment variables
+def get_credentials():
     pass
 
 
