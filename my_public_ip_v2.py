@@ -7,6 +7,7 @@ import os
 import argparse
 import time
 import socket
+import requests
 import smtplib
 from email.message import EmailMessage
 from twilio.rest import Client
