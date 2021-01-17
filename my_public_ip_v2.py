@@ -65,7 +65,7 @@ def run_config():
         creds["TWILIO_REC_NUMBER"] = twilio_rec_number
 
     script_schedule = input("How frequent would you like the script to run? (Enter amount in minutes): ")
-    creds["SCRIPT_SCHEDULE":script_schedule]
+    creds["SCRIPT_SCHEDULE"] = script_schedule
 
     return creds
         
