@@ -18,7 +18,7 @@ from getpass import getpass
 # Contains the main logic and control flow of the program
 def main():
     # Checking if reconfiguration is necessary whether the script is running for the first time or the user has requested
-    if take_args:
+    if take_args or not get_credentials("SCRIPT_CONFIGURED"):
         run_config()
 
     # Getting IP address
@@ -104,7 +104,72 @@ def store_credentials(creds):
 
 # Gets credentials and other details in environment variables
 def get_credentials(cred=None):
-    pass
+    # Returning a requested enviroment variable by itself
+    if cred:
+        try:
+            return os.environ[cred]
+        except KeyError:
+            return ""
+    
+    # Returning all requested enviromental variables for the configuration
+    try:
+        script_configured = os.environ["SCRIPT_CONFIGURED"]
+    except KeyError:
+        script_configured = ""
+
+    try:
+        use_gmail = os.environ["USE_GMAIL"]
+    except KeyError:
+        use_gmail = ""
+
+    try:
+        gmail_username = os.environ["GMAIL_USERNAME"]
+    except KeyError:
+        gmail_username = ""
+
+    try:
+        gmail_password = os.environ["GMAIL_PASSWORD"]
+    except KeyError:
+        gmail_password = ""
+
+    try:
+        gmail_rec_email = os.environ["GMAIL_REC_EMAIL"]
+    except KeyError:
+        gmail_rec_email = ""
+
+    try:
+        use_sms = os.environ["USE_SMS"]
+    except KeyError:
+        use_sms = ""
+
+    try:
+        twilio_sid = os.environ["TWILIO_SID"]
+    except KeyError:
+        twilio_sid = ""
+
+    try:
+        twilio_token = os.environ["TWILIO_TOKEN"]
+    except KeyError:
+        twilio_token = ""
+
+    try:
+        twilio_sender_number = os.environ["TWILIO_SENDER_NUMBER"]
+    except KeyError:
+        twilio_sender_number = ""
+
+    try:
+        twilio_rec_number = os.environ["TWILIO_REC_NUMBER"]
+    except KeyError:
+        twilio_rec_number = ""
+
+    try:
+        script_schedule = os.environ["SCRIPT_SCHEDULE"]
+    except KeyError:
+        script_schedule = ""
+
+    return script_configured, use_gmail, gmail_username, gmail_password, gmail_rec_email, use_sms, \
+    twilio_sid, twilio_token, twilio_sender_number, twilio_rec_number, script_schedule
+
 
 
 # Takes commandline arguments
