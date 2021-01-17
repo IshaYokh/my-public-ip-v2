@@ -71,12 +71,12 @@ def run_config():
         
 
 # Stores credentials and other details in environment variables
-def store_credentials():
+def store_credentials(creds):
     pass
 
 
 # Gets credentials and other details in environment variables
-def get_credentials():
+def get_credentials(cred=None):
     pass
 
 
