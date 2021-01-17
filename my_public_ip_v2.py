@@ -17,7 +17,12 @@ from getpass import getpass
 
 # Contains the main logic and control flow of the program
 def main():
-    pass
+    # Checking if reconfiguration is necessary whether the script is running for the first time or the user has requested
+    if take_args:
+        run_config()
+
+    # Getting IP address
+    ip_address = get_ip()
 
 
 # Runs commandline prompt to take credentials and other details from user
@@ -81,7 +86,7 @@ def take_args():
     argparser.add_argument("--reconfig", "--reconfigure", help="Reconfigure script, credentials and other details", required=False, action="store_true")
     args = argparser.parse_args()
 
-    return args
+    return args.reconfig
 
 
 # Gets public ip address using ipify.org API
