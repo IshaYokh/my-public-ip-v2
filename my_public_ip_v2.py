@@ -42,6 +42,7 @@ def run_config():
         gmail_rec_email = input("Enter receiver email: ")
 
         # Storing gmail credentials in creds to store later on in environment variables
+        creds["USE_GMAIL"] = True
         creds["GMAIL_USERNAME"] = gmail_username
         creds["GMAIL_PASSWORD"] = gmail_password
         creds["GMAIL_REC_EMAIL"] = gmail_rec_email
@@ -59,6 +60,7 @@ def run_config():
         twilio_rec_number = input("Enter receiver phone number: ")
 
         # Storing sms credentials in creds to store later on in environment variables
+        creds["USE_SMS"] = True
         creds["TWILIO_SID"] = twilio_sid
         creds["TWILIO_TOKEN"] = twilio_token
         creds["TWILIO_SENDER_NUMBER"] = twilio_sender_number
@@ -67,12 +69,37 @@ def run_config():
     script_schedule = input("How frequent would you like the script to run? (Enter amount in minutes): ")
     creds["SCRIPT_SCHEDULE"] = script_schedule
 
-    return creds
+    store_credentials(creds)
         
 
 # Stores credentials and other details in environment variables
 def store_credentials(creds):
-    pass
+    # Validating operating system
+    if os.name == "posix":
+        for export in creds:
+            with open(os.path.expanduser("~/.bashrc"), "a") as f:
+                f.write("export {variable}=\"{value}\"".format(variable=export, value=str(creds.get(export))))
+            sys.exit()
+    
+    elif os.name == "nt":
+        print(""" 
+                [X] The script detected Windows as the operating system, the script is only able to automatically store environment on linux for now\n
+                Manually save the below environment variables in your windows system and re-run the script again.
+
+                \n1. SCRIPT_CONFIGURED = True
+                \n2. USE_GMAIL = True or False (depends if you want to use email as your notification method)
+                \n3. GMAIL_USERNAME = the username of the gmail account that you would to use to send email notifications
+                \n4. GMAIL_PASSWORD = the password of the gmail account that you would to use to send email notifications
+                \n5. GMAIL_REC_EMAIL = the email to receive notifications
+                \n6. USE_SMS = True or False (depends if you want to use sms as your notification method)
+                \n7. TWILIO_SID = the SID of your twilio account
+                \n8. TWILIO_TOKEN = the authentication token of your twilio account
+                \n9. TWILIO_SENDER_NUMBER = the phone number that will send the sms notifications
+                \n10. TWILIO_REC_NUMBER = the phone number that will receive the sms notifications
+                \n11. SCRIPT_SCHEDULE = an integer that defines how frequent you would like the script to run, the numbers must be in minutes
+            """)
+
+        sys.exit()
 
 
 # Gets credentials and other details in environment variables
