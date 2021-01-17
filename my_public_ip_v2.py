@@ -33,7 +33,7 @@ def run_config():
     # Taking input for gmail credentials
     while(True):
         use_gmail = input("Do you want to use gmail to receive updates about your public IP address? (y/n): ")
-        if(use_gmail != "y" or use_gmail.lower() != "n" or use_gmail != "yes" or use_gmail != "no"):
+        if(use_gmail.lower() == "y" or use_gmail.lower() == "n" or use_gmail.lower() == "yes" or use_gmail.lower() == "no"):
             break
 
     if(use_gmail.lower() == "y" or use_gmail.lower() == "yes"):
@@ -49,7 +49,7 @@ def run_config():
     # Taking input for sms credentials
     while(True):
         use_sms = input("Do you want to use sms to receive updates about your public IP address? (y/n): ")
-        if(use_sms != "y" or use_sms.lower() != "n" or use_sms != "yes" or use_sms != "no"):
+        if(use_sms.lower() == "y" or use_sms.lower() == "n" or use_sms.lower() == "yes" or use_sms.lower() == "no"):
             break
 
     if(use_sms.lower() == "y" or use_sms.lower() == "yes"):
