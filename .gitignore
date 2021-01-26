@@ -1,5 +1,6 @@
 testing/
 __pycache__/
+ip_addresses.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

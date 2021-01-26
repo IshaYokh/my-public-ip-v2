@@ -18,11 +18,21 @@ from getpass import getpass
 # Contains the main logic and control flow of the program
 def main():
     # Checking if reconfiguration is necessary whether the script is running for the first time or the user has requested
-    if take_args or not get_credentials("SCRIPT_CONFIGURED"):
+    if take_args():
         run_config()
 
-    # Getting IP address
+    elif not get_credentials("SCRIPT_CONFIGURED"):
+        run_config()
+
+    # Checking if current IP is already in the database
     ip_address = get_ip()
+
+    if not check_db(ip_address):
+        send_notification(ip_address)
+        add_to_db(ip_address)
+    
+    # Checking schedule
+    check_schedule()
 
 
 # Runs commandline prompt to take credentials and other details from user
@@ -68,6 +78,7 @@ def run_config():
 
     script_schedule = input("How frequent would you like the script to run? (Enter amount in minutes): ")
     creds["SCRIPT_SCHEDULE"] = script_schedule
+    creds["SCRIPT_CONFIGURED"] = True
 
     store_credentials(creds)
         
@@ -78,8 +89,10 @@ def store_credentials(creds):
     if os.name == "posix":
         for export in creds:
             with open(os.path.expanduser("~/.bashrc"), "a") as f:
-                f.write("export {variable}=\"{value}\"".format(variable=export, value=str(creds.get(export))))
-            sys.exit()
+                f.write("\nexport {variable}=\"{value}\"".format(variable=export, value=str(creds.get(export))))
+                
+        print("[!] Enviroment variables saved. Reboot your system and re-run the script")
+        sys.exit()
     
     elif os.name == "nt":
         print(""" 
@@ -183,18 +196,60 @@ def take_args():
 
 # Gets public ip address using ipify.org API
 def get_ip():
+    print("[*] Getting IP address")
     return requests.get("https://api.ipify.org").text
 
 
-def send_notification():
-    pass
+# Sends new IP address to email or sms
+def send_notification(ip_address):
+    script_configured, use_gmail, gmail_username, gmail_password, gmail_rec_email, use_sms, \
+    twilio_sid, twilio_token, twilio_sender_number, twilio_rec_number, script_schedule = get_credentials()
+
+    msg_body = "New public IP address: " + ip_address
+
+    # Validating if the user has chosen email option and sending email using EmailMessage() and smtplib
+    if use_gmail:
+        print("[*] Sending email update notification")
+        msg = EmailMessage()
+        msg["Subject"] = "New Public IP address"
+        msg["From"] = gmail_username
+        msg["To"] = gmail_rec_email
+        msg.set_content(msg_body)
+
+        try:
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+                try:
+                    smtp.login(gmail_username, gmail_password)
+                    smtp.send_message(msg)
+                except smtplib.SMTPAuthenticationError:
+                    print( "[X] Error sending email - check receiver email or sender email and password\n\t \
+                            [!] Make sure less secure apps is enabled on the sender email\n\t \
+                            [!] Make sure you haven't been blocked")
+            
+        except socket.gaierror:
+            print("[X] Error sending email - check your internet connection")
+
+    # Validating if the user has chosen sms option and sending sms using twilio API
+    if use_sms:
+        print("[*] Sending SMS update notification")
+        twilio_client = Client(twilio_sid, twilio_token)
+        twilio_client.messages \
+            .create(
+                body = msg_body,
+                from_= twilio_sender_number,
+                to = twilio_rec_number
+            )
 
 
 # Creates an sqlite object, cursor and db table
 def init_sqlite():
     sql_connection = sqlite3.connect("ip_addresses.db")
-    sql_cursor = self.sql_connection.cursor()
-    sql.cursor.execute(""" CREATE TABLE ip_addresses (ip_address string) """)
+    sql_cursor = sql_connection.cursor()
+
+    try:
+        sql_cursor.execute(""" CREATE TABLE ip_addresses (ip_address string) """)
+    except sqlite3.OperationalError:
+        pass
 
     return sql_connection, sql_cursor
 
@@ -223,13 +278,27 @@ def check_db(ip_address):
     query = """ SELECT ip_address FROM ip_addresses WHERE ip_address = "{ip_address}" """.format(ip_address=ip_address)
     sql_connection, sql_cursor = init_sqlite()
     query_return = sql_cursor.execute(query)
-    query_return = query_return.fetch_all()
+    query_return = query_return.fetchall()
     sql_connection.commit()
 
     if(query_return):
         return True
 
     return False
+
+
+# Runs checks if user has set a time for the script to automatically run again, then sleeps until next run
+def check_schedule():
+    script_schedule = get_credentials("SCRIPT_SCHEDULE")
+
+    try:
+        if float(script_schedule) > 0:
+            while True:
+                # Converting minutes to seconds and sleeping until next run
+                time.sleep(float(script_schedule) * 60)
+                main()
+    except ValueError:
+        pass
 
 
 if __name__ == "__main__":
