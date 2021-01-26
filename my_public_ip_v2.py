@@ -37,19 +37,22 @@ def main():
 
 # Runs commandline prompt to take credentials and other details from user
 def run_config():
+    print("---------------------------------\n| my-public-ip-v2 configuration |\n---------------------------------")
+
+
     # Dict object to store credentials and other details
     creds = {"SCRIPT_CONFIGURED":False}
 
     # Taking input for gmail credentials
     while(True):
-        use_gmail = input("Do you want to use gmail to receive updates about your public IP address? (y/n): ")
+        use_gmail = input("[*] Do you want to use gmail to receive updates about your public IP address? (y/n): ")
         if(use_gmail.lower() == "y" or use_gmail.lower() == "n" or use_gmail.lower() == "yes" or use_gmail.lower() == "no"):
             break
 
     if(use_gmail.lower() == "y" or use_gmail.lower() == "yes"):
-        gmail_username = input("Enter gmail username: ")
-        gmail_password = getpass("Enter gmail password: ")
-        gmail_rec_email = input("Enter receiver email: ")
+        gmail_username = input("[*] Enter gmail username: ")
+        gmail_password = getpass("[*] Enter gmail password: ")
+        gmail_rec_email = input("[*] Enter receiver email: ")
 
         # Storing gmail credentials in creds to store later on in environment variables
         creds["USE_GMAIL"] = True
@@ -59,15 +62,15 @@ def run_config():
 
     # Taking input for sms credentials
     while(True):
-        use_sms = input("Do you want to use sms to receive updates about your public IP address? (y/n): ")
+        use_sms = input("[*] Do you want to use sms to receive updates about your public IP address? (y/n): ")
         if(use_sms.lower() == "y" or use_sms.lower() == "n" or use_sms.lower() == "yes" or use_sms.lower() == "no"):
             break
 
     if(use_sms.lower() == "y" or use_sms.lower() == "yes"):
-        twilio_sid = getpass("Enter twilio account SID: ")
-        twilio_token = getpass("Enter twilio account authentication token: ")
-        twilio_sender_number = input("Enter twilio sender phone number: ")
-        twilio_rec_number = input("Enter receiver phone number: ")
+        twilio_sid = getpass("[*] Enter twilio account SID: ")
+        twilio_token = getpass("[*] Enter twilio account authentication token: ")
+        twilio_sender_number = input("[*] Enter twilio sender phone number: ")
+        twilio_rec_number = input("[*] Enter receiver phone number: ")
 
         # Storing sms credentials in creds to store later on in environment variables
         creds["USE_SMS"] = True
@@ -76,7 +79,7 @@ def run_config():
         creds["TWILIO_SENDER_NUMBER"] = twilio_sender_number
         creds["TWILIO_REC_NUMBER"] = twilio_rec_number
 
-    script_schedule = input("How frequent would you like the script to run? (Enter amount in minutes): ")
+    script_schedule = input("[*] How frequent would you like the script to run? (Enter amount in minutes): ")
     creds["SCRIPT_SCHEDULE"] = script_schedule
     creds["SCRIPT_CONFIGURED"] = True
 
@@ -85,6 +88,8 @@ def run_config():
 
 # Stores credentials and other details in environment variables
 def store_credentials(creds):
+    print("[*] Storing credentials")
+
     # Validating operating system
     if os.name == "posix":
         for export in creds:
@@ -262,6 +267,8 @@ def close_db():
 
 # Adds data to local database
 def add_to_db(ip_address):
+    print("[*] Adding {ip} to database".format(ip=ip_address))
+
     if(check_db(ip_address)):
         return
 
@@ -274,6 +281,8 @@ def add_to_db(ip_address):
 
 # Checks if specific data exist in the local database
 def check_db(ip_address):
+    print("[*] Checking {ip} in database".format(ip=ip_address))
+
     # Sending query to local database to check if the given ip address is already stored
     query = """ SELECT ip_address FROM ip_addresses WHERE ip_address = "{ip_address}" """.format(ip_address=ip_address)
     sql_connection, sql_cursor = init_sqlite()
@@ -293,6 +302,7 @@ def check_schedule():
 
     try:
         if float(script_schedule) > 0:
+            print("[*] Sleeping until next run")
             while True:
                 # Converting minutes to seconds and sleeping until next run
                 time.sleep(float(script_schedule) * 60)
