@@ -17,11 +17,8 @@ from getpass import getpass
 
 # Contains the main logic and control flow of the program
 def main():
-    # Checking if reconfiguration is necessary whether the script is running for the first time or the user has requested
-    if take_args():
-        run_config()
-
-    elif not get_credentials("SCRIPT_CONFIGURED"):
+    # Checking if reconfiguration is necessary whether the script is running for the first time
+    if not get_credentials("SCRIPT_CONFIGURED"):
         run_config()
 
     # Checking if current IP is already in the database
@@ -102,7 +99,7 @@ def store_credentials(creds):
     elif os.name == "nt":
         print(""" 
                 [X] The script detected Windows as the operating system, the script is only able to automatically store environment on linux for now\n
-                Manually save the below environment variables in your windows system and re-run the script again.
+                Manually save the below environment variables in your windows system, reboot the system and re-run the script again.
 
                 \n1. SCRIPT_CONFIGURED = True
                 \n2. USE_GMAIL = True or False (depends if you want to use email as your notification method)
@@ -187,16 +184,6 @@ def get_credentials(cred=None):
 
     return script_configured, use_gmail, gmail_username, gmail_password, gmail_rec_email, use_sms, \
     twilio_sid, twilio_token, twilio_sender_number, twilio_rec_number, script_schedule
-
-
-
-# Takes commandline arguments
-def take_args():
-    argparser = argparse.ArgumentParser()
-    argparser.add_argument("--reconfig", "--reconfigure", help="Reconfigure script, credentials and other details", required=False, action="store_true")
-    args = argparser.parse_args()
-
-    return args.reconfig
 
 
 # Gets public ip address using ipify.org API
