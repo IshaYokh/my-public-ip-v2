@@ -1,6 +1,6 @@
 # my-public-ip-v2
 
-## Table of contents
+## Table of contents:
 - [Description](#Description)
 - [How it works](#How-it-works)
 - [Requirements](#Requirements)
