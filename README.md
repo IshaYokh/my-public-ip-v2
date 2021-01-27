@@ -34,12 +34,12 @@ The tool runs automatically based on a specified time interval, it checks if the
     - USE_GMAIL = True or False (depends if you want to use email as your notification method)
     - GMAIL_USERNAME = the username of the gmail account that you would to use to send email notifications
     - GMAIL_PASSWORD = the password of the gmail account that you would to use to send email notifications
-    - GMAIL_REC_EMAIL = the email to receive notifications
+    - GMAIL_RECV_EMAIL = the email to receive notifications
     - USE_SMS = True or False (depends if you want to use sms as your notification method)
     - TWILIO_SID = the SID of your twilio account
     - TWILIO_TOKEN = the authentication token of your twilio account
     - TWILIO_SENDER_NUMBER = the phone number that will send the sms notifications
-    - TWILIO_REC_NUMBER = the phone number that will receive the sms notifications
+    - TWILIO_RECV_NUMBER = the phone number that will receive the sms notifications
     - SCRIPT_SCHEDULE = an integer that defines how frequent you would like the script to run, the numbers must be in minutes
 
 

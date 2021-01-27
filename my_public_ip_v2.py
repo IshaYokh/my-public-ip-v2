@@ -17,7 +17,7 @@ from getpass import getpass
 
 # Contains the main logic and control flow of the program
 def main():
-    # Checking if reconfiguration is necessary whether the script is running for the first time
+    # Checking if reconfiguration is necessary if the script is running for the first time
     if not get_credentials("SCRIPT_CONFIGURED"):
         run_config()
 
@@ -49,13 +49,13 @@ def run_config():
     if(use_gmail.lower() == "y" or use_gmail.lower() == "yes"):
         gmail_username = input("[*] Enter gmail username: ")
         gmail_password = getpass("[*] Enter gmail password: ")
-        gmail_rec_email = input("[*] Enter receiver email: ")
+        gmail_recv_email = input("[*] Enter receiver email: ")
 
         # Storing gmail credentials in creds to store later on in environment variables
         creds["USE_GMAIL"] = True
         creds["GMAIL_USERNAME"] = gmail_username
         creds["GMAIL_PASSWORD"] = gmail_password
-        creds["GMAIL_REC_EMAIL"] = gmail_rec_email
+        creds["GMAIL_RECV_EMAIL"] = gmail_recv_email
 
     # Taking input for sms credentials
     while(True):
@@ -67,14 +67,14 @@ def run_config():
         twilio_sid = getpass("[*] Enter twilio account SID: ")
         twilio_token = getpass("[*] Enter twilio account authentication token: ")
         twilio_sender_number = input("[*] Enter twilio sender phone number: ")
-        twilio_rec_number = input("[*] Enter receiver phone number: ")
+        twilio_recv_number = input("[*] Enter receiver phone number: ")
 
         # Storing sms credentials in creds to store later on in environment variables
         creds["USE_SMS"] = True
         creds["TWILIO_SID"] = twilio_sid
         creds["TWILIO_TOKEN"] = twilio_token
         creds["TWILIO_SENDER_NUMBER"] = twilio_sender_number
-        creds["TWILIO_REC_NUMBER"] = twilio_rec_number
+        creds["TWILIO_RECV_NUMBER"] = twilio_recv_number
 
     script_schedule = input("[*] How frequent would you like the script to run? (Enter amount in minutes): ")
     creds["SCRIPT_SCHEDULE"] = script_schedule
@@ -148,9 +148,9 @@ def get_credentials(cred=None):
         gmail_password = ""
 
     try:
-        gmail_rec_email = os.environ["GMAIL_REC_EMAIL"]
+        gmail_recv_email = os.environ["GMAIL_RECV_EMAIL"]
     except KeyError:
-        gmail_rec_email = ""
+        gmail_recv_email = ""
 
     try:
         use_sms = os.environ["USE_SMS"]
@@ -173,9 +173,9 @@ def get_credentials(cred=None):
         twilio_sender_number = ""
 
     try:
-        twilio_rec_number = os.environ["TWILIO_REC_NUMBER"]
+        twilio_recv_number = os.environ["TWILIO_RECV_NUMBER"]
     except KeyError:
-        twilio_rec_number = ""
+        twilio_recv_number = ""
 
     try:
         script_schedule = os.environ["SCRIPT_SCHEDULE"]
@@ -194,8 +194,8 @@ def get_ip():
 
 # Sends new IP address to email or sms
 def send_notification(ip_address):
-    script_configured, use_gmail, gmail_username, gmail_password, gmail_rec_email, use_sms, \
-    twilio_sid, twilio_token, twilio_sender_number, twilio_rec_number, script_schedule = get_credentials()
+    script_configured, use_gmail, gmail_username, gmail_password, gmail_recv_email, use_sms, \
+    twilio_sid, twilio_token, twilio_sender_number, twilio_recv_number, script_schedule = get_credentials()
 
     msg_body = "New public IP address: " + ip_address
 
@@ -205,7 +205,7 @@ def send_notification(ip_address):
         msg = EmailMessage()
         msg["Subject"] = "New Public IP address"
         msg["From"] = gmail_username
-        msg["To"] = gmail_rec_email
+        msg["To"] = gmail_recv_email
         msg.set_content(msg_body)
 
         try:
@@ -229,7 +229,7 @@ def send_notification(ip_address):
             .create(
                 body = msg_body,
                 from_= twilio_sender_number,
-                to = twilio_rec_number
+                to = twilio_recv_number
             )
 
 
