@@ -32,14 +32,14 @@ The tool runs automatically based on a specified time interval, it obtains the p
   - Required values must be manually set as enviroment variables for windows, after setting up the variables, a reboot might be needed. Below is an explanation of what each evniroment variable name should be and what values it must hold:
     - SCRIPT_CONFIGURED = True (This tells the script that everything has been configured and there is no need to run the configuration prompt on next run)
     - USE_GMAIL = True or False (depends if you want to use email as your notification method)
-    - GMAIL_USERNAME = the username of the gmail account that you would to use to send email notifications
-    - GMAIL_PASSWORD = the password of the gmail account that you would to use to send email notifications
-    - GMAIL_RECV_EMAIL = the email to receive notifications
+    - GMAIL_USERNAME = the username of the gmail account that you would to use to send email notifications (only if email notifications will be used)
+    - GMAIL_PASSWORD = the password of the gmail account that you would to use to send email notifications (only if email notifications will be used)
+    - GMAIL_RECV_EMAIL = the email to receive notifications (only if email notifications will be used)
     - USE_SMS = True or False (depends if you want to use sms as your notification method)
-    - TWILIO_SID = the SID of your twilio account
-    - TWILIO_TOKEN = the authentication token of your twilio account
-    - TWILIO_SENDER_NUMBER = the phone number that will send the sms notifications
-    - TWILIO_RECV_NUMBER = the phone number that will receive the sms notifications
+    - TWILIO_SID = the SID of your twilio account (only if sms notifications will be used)
+    - TWILIO_TOKEN = the authentication token of your twilio account (only if sms notifications will be used)
+    - TWILIO_SENDER_NUMBER = the phone number that will send the sms notifications (only if sms notifications will be used)
+    - TWILIO_RECV_NUMBER = the phone number that will receive the sms notifications (only if sms notifications will be used)
     - SCRIPT_SCHEDULE = an integer that defines how frequent you would like the script to run, the numbers must be in minutes
 
 
