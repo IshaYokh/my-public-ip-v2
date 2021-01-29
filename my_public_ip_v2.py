@@ -126,64 +126,26 @@ def get_credentials(cred=None):
         except KeyError:
             return ""
     
+    """ Returning all requested enviromental variables for the configuration """
+
+    env_vars = []
+    env_vars_ids = ["SCRIPT_CONFIGURED","USE_GMAIL","GMAIL_USERNAME","GMAIL_PASSWORD", "GMAIL_RECV_EMAIL",
+                    "USE_SMS","TWILIO_SID", "TWILIO_TOKEN", "TWILIO_SENDER_NUMBER",
+                    "TWILIO_RECV_NUMBER","SCRIPT_SCHEDULE"
+    ]
+
+    # Iterating through the expected enviroment variable IDs
+    for var_id in env_vars_ids:
+        try:
+            # Obtaining enviroment variable
+            env_vars.append(os.environ[var_id])
+        except KeyError:
+            # Appending an empty string if the enviroment variable doesn't exist
+            env_vars.append("")
+
     # Returning all requested enviromental variables for the configuration
-    try:
-        script_configured = os.environ["SCRIPT_CONFIGURED"]
-    except KeyError:
-        script_configured = ""
-
-    try:
-        use_gmail = os.environ["USE_GMAIL"]
-    except KeyError:
-        use_gmail = ""
-
-    try:
-        gmail_username = os.environ["GMAIL_USERNAME"]
-    except KeyError:
-        gmail_username = ""
-
-    try:
-        gmail_password = os.environ["GMAIL_PASSWORD"]
-    except KeyError:
-        gmail_password = ""
-
-    try:
-        gmail_recv_email = os.environ["GMAIL_RECV_EMAIL"]
-    except KeyError:
-        gmail_recv_email = ""
-
-    try:
-        use_sms = os.environ["USE_SMS"]
-    except KeyError:
-        use_sms = ""
-
-    try:
-        twilio_sid = os.environ["TWILIO_SID"]
-    except KeyError:
-        twilio_sid = ""
-
-    try:
-        twilio_token = os.environ["TWILIO_TOKEN"]
-    except KeyError:
-        twilio_token = ""
-
-    try:
-        twilio_sender_number = os.environ["TWILIO_SENDER_NUMBER"]
-    except KeyError:
-        twilio_sender_number = ""
-
-    try:
-        twilio_recv_number = os.environ["TWILIO_RECV_NUMBER"]
-    except KeyError:
-        twilio_recv_number = ""
-
-    try:
-        script_schedule = os.environ["SCRIPT_SCHEDULE"]
-    except KeyError:
-        script_schedule = ""
-
-    return script_configured, use_gmail, gmail_username, gmail_password, gmail_rec_email, use_sms, \
-    twilio_sid, twilio_token, twilio_sender_number, twilio_rec_number, script_schedule
+    return env_vars[0],env_vars[1],env_vars[2],env_vars[3],env_vars[4], \
+    env_vars[5],env_vars[6],env_vars[7],env_vars[8],env_vars[9],env_vars[10]
 
 
 # Gets public ip address using ipify.org API
