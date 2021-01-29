@@ -21,11 +21,35 @@ def main():
     if not get_credentials("SCRIPT_CONFIGURED"):
         run_config()
 
-    # Checking if current IP is already in the database
-    ip_address = get_ip()
+    # Getting IP address
+    num_attempts = 0
+    while True:
+        if num_attempts == 3:
+            print("[X] Unable to obtain IP address, number of attempts: " + str(num_attempts))
+            sys.exit()
+        try:
+            num_attempts += 1
+            ip_address = get_ip()
+            break
+        except:
+            print("[X] Unable to obtain IP address - will try again in 5 minutes")
+            time.sleep(300)
 
+    # Checking if current IP is already in the database, adding it if it doesn't and sending notification
     if not check_db(ip_address):
-        send_notification(ip_address)
+        num_attempts = 0
+        while True:
+            if num_attempts == 3:
+                print("[X] Unable to send notification, number of attempts: " + str(num_attempts))
+                break
+            try:
+                num_attempts += 1
+                send_notification(ip_address)
+                break
+            except:
+                print("[X] Unable to send notification - will try again in 5 minutes")
+                time.sleep(300)
+
         add_to_db(ip_address)
     
     # Checking schedule
@@ -35,7 +59,6 @@ def main():
 # Runs commandline prompt to take credentials and other details from user
 def run_config():
     print("---------------------------------\n| my-public-ip-v2 configuration |\n---------------------------------")
-
 
     # Dict object to store credentials and other details
     creds = {"SCRIPT_CONFIGURED":False}
@@ -101,16 +124,16 @@ def store_credentials(creds):
                 [X] The script detected Windows as the operating system, the script is only able to automatically store environment on linux for now\n
                 Manually save the below environment variables in your windows system, reboot the system and re-run the script again.
 
-                \n1. SCRIPT_CONFIGURED = True
+                \n1. SCRIPT_CONFIGURED = True (This tells the script that everything has been configured and there is no need to run the configuration prompt on next run)
                 \n2. USE_GMAIL = True or False (depends if you want to use email as your notification method)
-                \n3. GMAIL_USERNAME = the username of the gmail account that you would to use to send email notifications
-                \n4. GMAIL_PASSWORD = the password of the gmail account that you would to use to send email notifications
-                \n5. GMAIL_REC_EMAIL = the email to receive notifications
+                \n3. GMAIL_USERNAME = the username of the gmail account that you would to use to send email notifications (only if email notifications will be used)
+                \n4. GMAIL_PASSWORD = the password of the gmail account that you would to use to send email notifications (only if email notifications will be used)
+                \n5. GMAIL_RECV_EMAIL = the email to receive notifications (only if email notifications will be used)
                 \n6. USE_SMS = True or False (depends if you want to use sms as your notification method)
-                \n7. TWILIO_SID = the SID of your twilio account
-                \n8. TWILIO_TOKEN = the authentication token of your twilio account
-                \n9. TWILIO_SENDER_NUMBER = the phone number that will send the sms notifications
-                \n10. TWILIO_REC_NUMBER = the phone number that will receive the sms notifications
+                \n7. TWILIO_SID = the SID of your twilio account (only if sms notifications will be used)
+                \n8. TWILIO_TOKEN = the authentication token of your twilio account (only if sms notifications will be used)
+                \n9. TWILIO_SENDER_NUMBER = the phone number that will send the sms notifications (only if sms notifications will be used)
+                \n10. TWILIO_RECV_NUMBER = the phone number that will receive the sms notifications (only if sms notifications will be used)
                 \n11. SCRIPT_SCHEDULE = an integer that defines how frequent you would like the script to run, the numbers must be in minutes
             """)
 
@@ -170,19 +193,10 @@ def send_notification(ip_address):
         msg["To"] = gmail_recv_email
         msg.set_content(msg_body)
 
-        try:
-            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-                try:
-                    smtp.login(gmail_username, gmail_password)
-                    smtp.send_message(msg)
-                except smtplib.SMTPAuthenticationError:
-                    print( "[X] Error sending email - check receiver email or sender email and password\n\t \
-                            [!] Make sure less secure apps is enabled on the sender email\n\t \
-                            [!] Make sure you haven't been blocked")
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+            smtp.login(gmail_username, gmail_password)
+            smtp.send_message(msg)
             
-        except socket.gaierror:
-            print("[X] Error sending email - check your internet connection")
-
     # Validating if the user has chosen sms option and sending sms using twilio API
     if use_sms:
         print("[*] Sending SMS update notification")
