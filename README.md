@@ -13,7 +13,7 @@
 A simple tool that reports your dynamic public IP address to you via email and sms, it checks for new IP addresses based on a specified time interval and it stores and obtains credentials as enviroment variables. This tool comes in handy for people that are unable to obtain a static public IP address and don't want to get a domain name.
 
 ## How it works:
-The tool runs automatically based on a specified time interval, it checks if the IP is in the databse then stores it if it's not and sends the notification. For Linux, It runs a configuration prompt on first time use then stores the values that are given by the user as enviroment variables. For windows, unfortunately, it doesn't store the credentials automatically so they must be defined manually.
+The tool runs automatically based on a specified time interval, it obtains the public IP address using ipify API and checks if it's in the databse then stores it if it's not and sends the notification. For Linux, It runs a configuration prompt on first time use then stores the values that are given by the user as enviroment variables. For windows, unfortunately, it doesn't store the credentials automatically so they must be defined manually.
 
 ## Requirements:
 - Linux/Unix based system or Windows
