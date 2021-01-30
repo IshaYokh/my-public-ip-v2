@@ -70,15 +70,11 @@ def run_config():
             break
 
     if(use_gmail.lower() == "y" or use_gmail.lower() == "yes"):
-        gmail_username = input("[*] Enter gmail username: ")
-        gmail_password = getpass("[*] Enter gmail password: ")
-        gmail_recv_email = input("[*] Enter receiver email: ")
-
         # Storing gmail credentials in creds to store later on in environment variables
         creds["USE_GMAIL"] = True
-        creds["GMAIL_USERNAME"] = gmail_username
-        creds["GMAIL_PASSWORD"] = gmail_password
-        creds["GMAIL_RECV_EMAIL"] = gmail_recv_email
+        creds["GMAIL_USERNAME"] = input("[*] Enter gmail username: ")
+        creds["GMAIL_PASSWORD"] = getpass("[*] Enter gmail password: ")
+        creds["GMAIL_RECV_EMAIL"] = input("[*] Enter receiver email: ")
 
     # Taking input for sms credentials
     while(True):
@@ -87,20 +83,14 @@ def run_config():
             break
 
     if(use_sms.lower() == "y" or use_sms.lower() == "yes"):
-        twilio_sid = getpass("[*] Enter twilio account SID: ")
-        twilio_token = getpass("[*] Enter twilio account authentication token: ")
-        twilio_sender_number = input("[*] Enter twilio sender phone number: ")
-        twilio_recv_number = input("[*] Enter receiver phone number: ")
-
         # Storing sms credentials in creds to store later on in environment variables
         creds["USE_SMS"] = True
-        creds["TWILIO_SID"] = twilio_sid
-        creds["TWILIO_TOKEN"] = twilio_token
-        creds["TWILIO_SENDER_NUMBER"] = twilio_sender_number
-        creds["TWILIO_RECV_NUMBER"] = twilio_recv_number
+        creds["TWILIO_SID"] = getpass("[*] Enter twilio account SID: ")
+        creds["TWILIO_TOKEN"] = getpass("[*] Enter twilio account authentication token: ")
+        creds["TWILIO_SENDER_NUMBER"] = input("[*] Enter twilio sender phone number: ")
+        creds["TWILIO_RECV_NUMBER"] = input("[*] Enter receiver phone number: ")
 
-    script_schedule = input("[*] How frequent would you like the script to run? (Enter amount in minutes): ")
-    creds["SCRIPT_SCHEDULE"] = script_schedule
+    creds["SCRIPT_SCHEDULE"] = input("[*] How frequent would you like the script to run? (Enter amount in minutes): ")
     creds["SCRIPT_CONFIGURED"] = True
 
     store_credentials(creds)
