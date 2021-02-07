@@ -19,7 +19,7 @@ The tool runs automatically based on a specified time interval, it obtains the p
 - Linux/Unix based system or Windows
 - Python 3
 - Pip3 (Python package manager)
-- All libraries in requirements.txt which is Twilio (can be installed through pip, command depends on your operating system, "pip3 install requirements.txt" for Linux)
+- All libraries in requirements.txt which is Twilio (can be installed through pip, command depends on your operating system, "pip3 install -r requirements.txt" for Linux)
 - Access privilege to environmental variables in your system
 - Gmail username and password (only required if email notification option is selected in settings)
 - Twilio API key, authentication token, and a phone number (only required if SMS option is selected in settings)
